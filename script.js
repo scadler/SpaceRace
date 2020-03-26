@@ -2,18 +2,16 @@
 const canvas = document.getElementById("pong");
 const context = canvas.getContext("2d");
 const user = {
-    y : canvas.height,
+    y : canvas.height-100,
+    x : canvas.width/2,
     width : 15,
     color : "White",
+    movement : 0,
+    Vy : 0,
+    Vx : 0,
 }
-const ball = {
-    x : 100,
-    y : 100,
-    radius : 20,
-    color : "White",
-    angleOld : 0,
-    speed : 0.5,
-    i : 0,
+var s = {
+    i: 0,
 }
 //draw functions 
 function drawRect(x, y, w, h, color){
@@ -32,14 +30,17 @@ function collision(){
     // }
 }
 var a = 0
-function drawUser(y){
+function drawUser(x,y){
+    user.x += user.Vx
+    user.y += user.Vy
     var context = canvas.getContext("2d");
     context.beginPath();
     context.fillStyle = "rgba(0, 0, 0, 0,)";
-    context.moveTo(canvas.width/3 - 10, y);
-    context.lineTo(canvas.width/3 - 10, y-40);
-    context.lineTo(canvas.width/3 + 10, y-40)
-    context.lineTo(canvas.width/3 + 10, y);
+    let height = 30 * Math.cos(Math.PI / 6);
+    context.moveTo(x, y);
+    context.lineTo(x+15, y - height/2.5)
+    context.lineTo(x+30, y);
+    context.lineTo(x+15, y - height);
     context.closePath();
     context.fill();
     context.lineWidth = 1.5;
@@ -63,22 +64,43 @@ function drawText(text,x, y, color){
     context.fillText(text, x, y);
 }
 function update(){
-
+    if(user.y > canvas.height-50){
+        user.y = canvas.height-51
+    }
+    else if(user.y < canvas.height-200){
+        user.y = canvas.height-199
+    }
 }
 function render(){
 drawRect(0, 0, canvas.width, canvas.height, "#000000'");
-drawUser(user.y)
+drawUser(user.x,user.y)
 }
 function game(){
     render();
-    update()
+    update();
 }
 setInterval(game,)
 document.addEventListener('keydown', keyPressed)
 document.addEventListener('keyup', keyUp)
 function keyPressed(e){
     key = e.key
+    if(key =="a"  || e.keyCode ==37){
+        user.Vx = -0.7
+    }
+    else if(key =="d"|| e.keyCode ==39){
+        user.Vx = 0.7
+    }
+    else if(key =="w" || e.keyCode ==38){
+        user.Vy = -0.3
+    }
+    else if(key =="s"|| e.keyCode ==40){
+        user.Vy = 0.3
+    }
     if(key == " ") {
-    user.y = user.y - 1
+    e.preventDefault();
   }
+}
+function keyUp(){
+    user.Vy = 0
+    user.Vx = 0
 }
